@@ -63,6 +63,59 @@ memory-bank/
 
 ---
 
+## 🛠️ Development Rules with Explicit Scope
+
+**Purpose:** Mandatory rules governing HOW agents develop code, with clear scope of application for each rule.
+
+**Rules Location:** [`.agents/`](.agents) directory  
+**Index & Registry:** [`.agents/README.md`](.agents/README.md)  
+**Owner:** James Osei (CTO)
+
+### Available Rules:
+
+| Rule | File | Applies To | Scope |
+|------|------|-----------|-------|
+| **RULE 001: Database Migrations Protocol** | [`.agents/RULE_001_DATABASE_MIGRATIONS.md`](.agents/RULE_001_DATABASE_MIGRATIONS.md) | Backend developers, DBAs, all schema changes | `services/api/migrations/`, `services/api/models/`, ALL branches (main, develop, feature/*, hotfix/*), LOCAL→STAGING→PROD environments, PHI data with HIPAA/GDPR compliance |
+
+### How to Use Development Rules:
+
+1. **Before Starting Work:** Check [`.agents/README.md`](.agents/README.md) to identify applicable rules
+2. **Review Scope Section:** Confirm the rule applies to your task (WHERE, WHO, WHEN, WHAT)
+3. **Follow All Requirements:** Execute every step in order (usually 5-6 sequential steps)
+4. **Submit Code:** Only after Definition of Done (DoD) checklist is 100% complete
+5. **If Blocked:** Contact rule owner listed in the rule file → escalate to CTO if needed
+
+### Key Rule Concepts:
+
+```yaml
+Every development rule defines:
+  ├─ Scope of Application (WHERE, WHO, WHEN, WHAT)
+  ├─ 5-6 Sequential Requirements (steps agents must follow)
+  ├─ Violations & Enforcement (what breaks the rule, consequences)
+  ├─ Definition of Done (checklist proving completion)
+  └─ Escalation Contacts (who to ask if blocked)
+
+Violations:
+  ❌ Rules are MANDATORY - no skipping steps
+  ❌ Scope must be respected (don't apply outside defined scope)
+  ❌ PRs without full compliance → automatic rejection
+  ❌ Repeated violations → escalation to CTO + performance review
+```
+
+### Adding New Rules:
+
+To create a new development rule:
+1. Create file: `.agents/RULE_NNN_DESCRIPTIVE_NAME.md` (using RULE_001 as template)
+2. Define explicit **Scope of Application** section first
+3. Document 5-6 **Requirements** steps with commands
+4. Include **Violations & Enforcement** matrix
+5. Add **Definition of Done** checklist
+6. Update [`.agents/README.md`](.agents/README.md) registry
+7. Submit PR for CTO approval
+8. Approval required before rule becomes mandatory
+
+---
+
 ## 🔄 Obligatory Commit Workflow (4+ Steps)
 
 **⚠️ MANDATORY:** All agents must follow this workflow BEFORE committing code to any branch (`main`, `develop`, feature branches). No exceptions.
