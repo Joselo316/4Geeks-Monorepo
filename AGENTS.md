@@ -63,6 +63,205 @@ memory-bank/
 
 ---
 
+## 🔄 Obligatory Commit Workflow (4+ Steps)
+
+**⚠️ MANDATORY:** All agents must follow this workflow BEFORE committing code to any branch (`main`, `develop`, feature branches). No exceptions.
+
+**Complete Reference:** [`docs/COMMIT_WORKFLOW.md`](docs/COMMIT_WORKFLOW.md)  
+**Owner:** James Osei (CTO)  
+**Enforcement:** GitHub branch protection + CI/CD pipeline
+
+### **STEP 1️⃣: Code Quality & Type Safety** (5-10 min)
+
+**Run all formatters and type checkers:**
+
+```bash
+# Python code
+black services/api --line-length 100
+ruff check services/api --fix
+mypy services/api
+
+# TypeScript/JavaScript code
+prettier uis/backoffice/src --write
+eslint uis/backoffice/src --fix
+tsc --noEmit uis/backoffice
+```
+
+**Definition of Done:**
+- ✅ All formatters pass (black, prettier)
+- ✅ All linters pass (ruff, eslint)
+- ✅ All type checkers pass (mypy, tsc) with zero errors
+- ✅ No warnings in any tool
+
+**If checks fail:** Fix code or suppress with comments if justified. If still failing, escalate to Tech Lead.
+
+---
+
+### **STEP 2️⃣: Automated Tests** (10-20 min)
+
+**Run unit tests for your code:**
+
+```bash
+# Python tests
+pytest services/api/tests --cov=services/api --cov-fail-under=80
+
+# TypeScript/JavaScript tests
+npm test -- --coverage uis/backoffice
+```
+
+**Definition of Done:**
+- ✅ All tests pass (zero failures)
+- ✅ Code coverage ≥80% (new code)
+- ✅ No skipped tests (`.skip`, `.only`)
+- ✅ All test assertions are meaningful (not just "expect truthy")
+
+**If tests fail:**
+1. Review failure message
+2. Fix code or test expectations
+3. Re-run tests
+4. If persistent: escalate with test output
+
+---
+
+### **STEP 3️⃣: Documentation & Compliance Review** (5-15 min)
+
+**Verify documentation and compliance:**
+
+```bash
+# Check no secrets exposed
+git diff HEAD | grep -E "password|secret|token|api.key|AWS_SECRET" || echo "✅ No secrets found"
+
+# Verify commit message explains changes
+git log --oneline -1  # Should describe WHAT and WHY
+
+# Review docstrings for changed functions/classes
+# (Python functions, TypeScript interfaces, React components)
+```
+
+**Checklist:**
+- ✅ Commit message follows convention: `type: description`
+  - Examples: `feat: Add appointment reminder skill`, `fix: Handle data residency in queries`
+  - Types: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`
+- ✅ No hardcoded secrets (passwords, API keys, JWT secrets)
+- ✅ No PII in commit messages (never mention patient names, MRNs, SSNs)
+- ✅ All public functions/classes have docstrings
+- ✅ Changed HIPAA-sensitive code has compliance comments
+- ✅ No breaking changes without coordination
+
+**If compliance check fails:**
+1. Remove secrets: Never commit them
+2. Add docstrings: Required for all public APIs
+3. Update commit message: Must explain changes
+4. If changing HIPAA code: Add compliance note in commit
+
+---
+
+### **STEP 4️⃣: Self-Review Before PR Submission** (10-15 min)
+
+**Review your own code thoroughly:**
+
+**Checklist:**
+- ✅ Code is readable and maintainable
+- ✅ No hardcoded values (use env vars, config)
+- ✅ No console.log() or print() statements left (use proper logging)
+- ✅ Error handling is complete (try/catch, error boundaries, etc.)
+- ✅ No breaking changes without documentation
+- ✅ Related code is consistent (same patterns, naming conventions)
+- ✅ No copy-paste code (DRY principle)
+- ✅ Performance considerations documented (if applicable)
+- ✅ Security review: No SQL injection, XSS, CSRF vulnerabilities
+- ✅ Compliance review:
+  - If patient data: HIPAA logging in place
+  - If UK users: GDPR compliance verified
+  - If clinic access: Data residency rules respected
+
+**Red Flags (Fix before submitting):**
+- ❌ Commented-out code (delete it, use git history if needed)
+- ❌ TODO comments without issues tracking them
+- ❌ Magic numbers without explanation
+- ❌ Query without clinic_id filter (data residency violation)
+- ❌ Patient data without audit logging
+- ❌ Unhandled async errors
+- ❌ Breaking API changes
+
+---
+
+### **STEP 5️⃣: Verify All Checks Pass & Create PR** (5 min)
+
+**Final verification before PR submission:**
+
+```bash
+# Verify git status is clean
+git status  # Should only show your changes
+
+# Verify no merge conflicts
+git merge origin/main  # (or origin/develop)
+
+# Create PR with clear description
+# Include: WHAT changed, WHY, any breaking changes, testing notes
+```
+
+**PR Description Template:**
+```markdown
+## What Changed
+Brief description of changes
+
+## Why
+Link to issue or business reason
+
+## How to Test
+1. Step 1
+2. Step 2
+
+## Checklist
+- [ ] All CI checks pass
+- [ ] Code review by at least 1 teammate
+- [ ] No HIPAA/GDPR violations
+- [ ] Updated relevant documentation
+- [ ] No hardcoded secrets
+```
+
+**Definition of Done:**
+- ✅ PR title is clear and descriptive
+- ✅ PR description explains WHAT and WHY
+- ✅ All code review comments addressed
+- ✅ CI pipeline passes (all checks green)
+- ✅ At least 1 approval from code review
+
+---
+
+## ⏱️ Total Time for Full Workflow
+
+| Step | Time | Activities |
+|------|------|-----------|
+| Step 1: Code Quality & Type Safety | 5-10 min | Format, lint, type-check |
+| Step 2: Automated Tests | 10-20 min | Run pytest/jest, check coverage |
+| Step 3: Documentation & Compliance | 5-15 min | Verify secrets, docs, compliance |
+| Step 4: Self-Review | 10-15 min | Review code quality & logic |
+| Step 5: PR Submission & Verification | 5 min | Final checks, create PR |
+| **TOTAL** | **35-75 min** | **Full workflow before push** |
+
+---
+
+## 🛑 Non-Negotiable Rules
+
+These are **MANDATORY** for every commit:
+
+1. **All 4+ steps completed** before `git push` → No exceptions
+2. **CI pipeline must pass** → No bypassing checks
+3. **No secrets committed** → Never commit passwords, API keys, tokens
+4. **HIPAA/GDPR compliance** → Required for patient data operations
+5. **Code review required** → At least 1 approval before merge
+6. **Documentation updated** → Docstrings, comments, README if needed
+
+**Violations:**
+- Merge conflicts due to skipping steps → Fix and resubmit
+- Security issues detected in review → Fix immediately, rescan
+- Failing CI checks → Fix code, don't bypass pipeline
+- HIPAA violations → Escalate to Compliance Officer immediately
+
+---
+
 ## 🤖 Agent Types & Memory Requirements
 
 ### 1. **Backend Development Agent** (`backend-dev`)
