@@ -48,6 +48,7 @@ The `.agents/` folder contains development rules that ALL agents must follow whe
 | Rule | Code Locations | Team | Branches | Environments | Technologies | Compliance |
 |------|---|---|---|---|---|---|
 | **001: DB Migrations** | `services/api/migrations/` | Backend, DBA | ALL | LOCAL→STAGING→PROD | Alembic, Django ORM, SQL | HIPAA, GDPR |
+| **002: Monorepo Structure** | `uis/website/`, `uis/backoffice/`, `services/api/`, `packages/shared/` | ALL developers, agents | ALL branches | n/a | Frontend, Backend, Shared | Monorepo organization |
 
 ---
 
@@ -96,6 +97,15 @@ Before creating or modifying code, verify:
 - ❌ Missing HIPAA/GDPR compliance comments
 
 **Consequence:** PR rejection + rewrite required
+
+### RULE 002: Monorepo Folder Structure
+- ❌ Creating `uis/admin/`, `uis/dashboard/`, `uis/app-v2/` (use uis/backoffice/)
+- ❌ Creating `services/appointments-api/`, `services/patient-service/` (use services/api/ with routers)
+- ❌ Duplicating shared types: types in `uis/` AND `services/` (centralize in packages/shared/)
+- ❌ Creating development rules outside `.agents/RULE_NNN.md` format
+- ❌ Maintaining parallel/legacy apps without refactoring plan (>3 months)
+
+**Consequence:** PR REJECTED; rewrite in correct folder or escalate to CTO
 
 ---
 

@@ -7,12 +7,15 @@ HealthCore Digital follows a **monorepo architecture** organized by responsibili
 ```
 4Geeks-Monorepo/
 ├── uis/                 # Frontend applications (React/TypeScript)
+│   ├── website/         # ONE public website
+│   └── backoffice/      # ONE internal admin dashboard
 ├── services/            # FastAPI backend (centralized)
+│   └── api/             # ONE centralized FastAPI service
+├── packages/shared/     # Shared TypeScript types (single source of truth)
 ├── agents/              # AI agents and automation (Python)
-├── skills/              # Reusable agent capabilities
-├── mcps/                # MCP tool servers
+├── .agents/             # Agent development rules (RULE_NNN.md files)
 ├── workflows/           # n8n orchestration flows
-├── packages/shared/     # Shared TypeScript types
+├── mcps/                # MCP tool servers
 ├── data/                # Datasets and pipelines
 ├── infra/               # Docker, deployment configs
 └── docs/                # Architecture and decisions
@@ -21,22 +24,45 @@ HealthCore Digital follows a **monorepo architecture** organized by responsibili
 ### Design Principles
 
 1. **Single Responsibility per Layer**
-   - `uis/` = User interfaces only
-   - `services/` = Centralized FastAPI backend (avoid early microservices)
+   - `uis/website/` = ONE public-facing website (React/TypeScript)
+   - `uis/backoffice/` = ONE internal admin dashboard (React/TypeScript)
+   - `services/api/` = ONE centralized FastAPI backend with routers per domain
+   - `packages/shared/` = Shared types (single source of truth for frontend + backend)
    - `agents/` = AI-driven automation and decision-making
    - `workflows/` = Cross-system orchestration
+   - `.agents/` = Development rules governing agent behavior
 
 2. **Avoid Premature Fragmentation**
-   - Keep one main FastAPI app with routers per domain
-   - Extract microservices only when necessary (high load, independent scaling)
+   - ⚠️ **NO parallel apps:** Create `uis/admin/`, `uis/portal/`, `uis/app-v2/` ← FORBIDDEN
+   - ⚠️ **NO separate microservices early:** Create `services/appointments-api/`, `services/patient-service/` ← FORBIDDEN
+   - ✅ Keep one main FastAPI app with routers per domain (appointments.py, patients.py, etc.)
+   - ✅ Extract microservices ONLY when necessary (high load, independent scaling)
+   - ⚠️ **NO duplicated types:** Types in `uis/` AND `services/` ← FORBIDDEN; use `packages/shared/`
 
 3. **Data-Driven**
-   - Single source of truth for domain models in `packages/shared`
+   - Single source of truth for domain models in `packages/shared/`
    - Shared types prevent schema drift between frontend/backend
+   - One type definition used by both uis/website, uis/backoffice, and services/api
 
 4. **Compliance-First**
    - All patient data handling must follow HIPAA (USA) and UK GDPR
    - Audit logging and encryption mandatory in every layer
+   - Region-specific data residency: USA data stays in USA, UK data stays in UK
+
+---
+
+### Where Code Belongs (Authoritative Reference)
+
+**See RULE_002:** [`.agents/RULE_002_MONOREPO_FOLDER_STRUCTURE.md`](../agents/RULE_002_MONOREPO_FOLDER_STRUCTURE.md) for complete folder structure rules.
+
+| Artifact Type | Folder | Count | Allowed? | Example |
+|---------------|--------|-------|----------|---------|
+| **Public Website** | `uis/website/` | 1 | ❌ NO duplicates | Patient portal, clinic info pages |
+| **Admin Dashboard** | `uis/backoffice/` | 1 | ❌ NO duplicates | Clinic management, patient records, reporting |
+| **Backend API** | `services/api/` | 1 | ❌ NO duplicates (unless microservice) | FastAPI service with routers: appointments, patients, clinics |
+| **Shared Types** | `packages/shared/` | 1 | ❌ NO duplicates | Appointment, Patient, Clinic TypeScript interfaces |
+| **Agent Skills** | `agents/skills/` | Unlimited | ✅ YES (each unique) | APPOINTMENT_REMINDER_PROCESSOR.md, [future skills] |
+| **Development Rules** | `.agents/RULE_NNN.md` | Unlimited | ✅ YES (each unique) | RULE_001, RULE_002, [future rules] |
 
 ---
 

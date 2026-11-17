@@ -76,6 +76,7 @@ memory-bank/
 | Rule | File | Applies To | Scope |
 |------|------|-----------|-------|
 | **RULE 001: Database Migrations Protocol** | [`.agents/RULE_001_DATABASE_MIGRATIONS.md`](.agents/RULE_001_DATABASE_MIGRATIONS.md) | Backend developers, DBAs, all schema changes | `services/api/migrations/`, `services/api/models/`, ALL branches (main, develop, feature/*, hotfix/*), LOCAL→STAGING→PROD environments, PHI data with HIPAA/GDPR compliance |
+| **RULE 002: Monorepo Folder Structure & Naming** | [`.agents/RULE_002_MONOREPO_FOLDER_STRUCTURE.md`](.agents/RULE_002_MONOREPO_FOLDER_STRUCTURE.md) | ALL developers, all agents proposing new code/apps | 1 website (uis/website/), 1 backoffice (uis/backoffice/), 1 API (services/api/ with routers), shared types (packages/shared/), prohibits parallel/duplicate apps, ALL branches |
 
 ### How to Use Development Rules:
 
