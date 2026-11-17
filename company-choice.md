@@ -15,3 +15,26 @@ El reto de automatizacion
 · Automatización de citas médicas mediante inteligencia artificial.
 Me gustaría desarrollar un sistema inteligente que automatice la gestión de citas médicas, envíe recordatorios y utilice modelos de Machine Learning para predecir posibles inasistencias.
 Elegí este reto porque permite aplicar programación, automatización e inteligencia artificial para resolver un problema real, reducir las pérdidas económicas y mejorar la atención a los pacientes.
+
+
+
+### My IA agent idea
+El agente de inteligencia artificial debe gestionar automáticamente las citas médicas, enviar recordatorios a los pacientes, identificar posibles inasistencias y facilitar la confirmación o reprogramación de citas.
+
+## ¿Qué información necesita?
+- Datos de contacto de los pacientes.
+- Fecha, hora y especialidad de la cita médica.
+- Historial de asistencia y cancelaciones.
+- Disponibilidad de los médicos.
+- Confirmación o respuesta del paciente.
+
+## ¿Qué produciría o desencadenaría?
+- Envío automático de recordatorios por WhatsApp, SMS o correo electrónico.
+- Identificación de pacientes con mayor probabilidad de faltar.
+- Alertas al personal administrativo sobre citas en riesgo.
+- Confirmación o solicitud de reprogramación de citas.
+- Actualización automática de la agenda médica.
+- Reportes sobre asistencia, cancelaciones y citas recuperadas.
+
+## ¿Cuál sería el resultado esperado?
+Reducir las inasistencias, optimizar el tiempo de los médicos, disminuir las pérdidas económicas y mejorar la experiencia de los pacientes mediante la automatización.
